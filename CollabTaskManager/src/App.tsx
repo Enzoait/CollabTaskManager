@@ -80,7 +80,7 @@ function App() {
       </div>
       <div className="taskmanager">
         {/*Changer la méthode pour essayer les autres stratégies de tri ci dessous*/}
-        {sortTasksByDone(tasks).map((task) => (
+        { sortTasksByDone( tasks).map((task) => (
           <div className="task" key={task.id}>
             <div className='taskHead'>
               <h3 className='taskName'>{task.name}</h3>
@@ -93,16 +93,16 @@ function App() {
               {task.timeLeft ? <p>Temps restant : {task.timeLeft} min</p> : null}
               <p className='taskDate'>Créée le : {task.date.toLocaleString()}</p>
             </div>
-              {task.status ? <button onClick={() => setAsDoneOrUndone(task)} className='undoneTaskBtn'>Marquer comme non terminé ❌ </button> : <button onClick={() => setAsDoneOrUndone(task)} className='doneTaskBtn'>Marquer comme terminé ✅ </button>}
+              {task.status ? <button onClick={() =>  setAsDoneOrUndone(task)} className='undoneTaskBtn'>Marquer comme non terminé ❌ </button> : <button onClick={() =>  setAsDoneOrUndone(task)} className='doneTaskBtn'>Marquer comme terminé ✅ </button>}
           </div>
         ))}
       </div>
       <div className='btns-div'>
-        <button onClick={() => createRegularTask(`${countTotal}`, `New Regular task ${countRegular}`, `New Regular description ${countRegular}`, false, 0, new Date())}>
+        <button onClick={() =>  createRegularTask(`${ countTotal}`, `New Regular task ${ countRegular}`, `New Regular description ${ countRegular}`, false, 0, new Date())}>
             Créer une tache simple 📝
         </button>
 
-        <button onClick={() => createTimedTask(`${countTotal}`, `New Timed task ${countTimed}`, `New Timed description ${countTimed}`, false, 0, new Date(), 30)}>
+        <button onClick={() =>  createTimedTask(`${ countTotal}`, `New Timed task ${ countTimed}`, `New Timed description ${ countTimed}`, false, 0, new Date(), 30)}>
             Créer une tache minutée ⏱️
         </button>
       </div>
