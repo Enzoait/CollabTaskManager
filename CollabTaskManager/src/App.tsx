@@ -3,6 +3,7 @@ import './App.css'
 import githubIcon from './assets/github-mark-white.svg';
 import { regularTask, timedTask, Task} from './classes/TaskFactory'
 import { context, AlphabeticalStrategy, ChronologicalStrategy, TimeLeftStrategy, DoneStrategy } from './classes/Strategy'
+import {notifyTaskCreated, notifyTaskDone} from './classes/NotificationSystem'
 
 function App() {
   const [countRegular, setCountRegular] = useState(1);
@@ -20,6 +21,7 @@ function App() {
     const task = regularTask.createTask(id,name, description, status, nbrStatus, date);
     console.log(task);
     setTasks((prevTasks) => [...prevTasks, task]);
+    notifyTaskCreated(task.name);
     return task;
   }
 
@@ -29,10 +31,11 @@ function App() {
     const task = timedTask.createTask(id,name, description, status, nbrStatus, date, timeLeft);
     console.log(task);
     setTasks((prevTasks) => [...prevTasks, task]);
+    notifyTaskCreated(task.name);
     return task;
   }
 
-  function setAsDone(task: Task) : void {
+  function setAsDoneOrUndone(task: Task) : void {
     task.status = !task.status;
     
     const newTasks = tasks.map((t) => {
@@ -42,6 +45,7 @@ function App() {
       return t;
     });
     setTasks(newTasks);
+    task.status ? notifyTaskDone(task.name) : null;
   }
 
   function sortTasksByAlphabeticalOrder(tasks: Task[]) : Task[] {
@@ -78,27 +82,33 @@ function App() {
         {/*Changer la méthode pour essayer les autres stratégies de tri ci dessous*/}
         {sortTasksByDone(tasks).map((task) => (
           <div className="task" key={task.id}>
-            <h3>{task.name}</h3>
-            <p>{task.description}</p>
-            <p>{task.status ? "Terminé" : "En cours"}</p>
-            <p>Créée le : {task.date.toLocaleString()}</p>
-            {task.timeLeft ? <p>Temps restant : {task.timeLeft} min</p> : null}
-            {task.status ? <button onClick={() => setAsDone(task)}>Marquer comme non terminé ❌ </button> : <button onClick={() => setAsDone(task)}>Marquer comme terminé ✅ </button>}
+            <div className='taskHead'>
+              <h3 className='taskName'>{task.name}</h3>
+              <p className='taskStatus'>{task.status ? "Terminé ✅" : "En cours ⌛"}</p>
+            </div>
+            <div className='taskDescriptionDiv'>
+              <p className='taskDescription'>{task.description}</p>
+            </div>
+            <div className='taskFooter'>
+              {task.timeLeft ? <p>Temps restant : {task.timeLeft} min</p> : null}
+              <p className='taskDate'>Créée le : {task.date.toLocaleString()}</p>
+            </div>
+              {task.status ? <button onClick={() => setAsDoneOrUndone(task)} className='undoneTaskBtn'>Marquer comme non terminé ❌ </button> : <button onClick={() => setAsDoneOrUndone(task)} className='doneTaskBtn'>Marquer comme terminé ✅ </button>}
           </div>
         ))}
       </div>
       <div className='btns-div'>
-        <button className='regularTaskBtn' onClick={() => createRegularTask(`${countTotal}`, `New Regular task ${countRegular}`, `New Regular description ${countRegular}`, false, 0, new Date())}>
+        <button onClick={() => createRegularTask(`${countTotal}`, `New Regular task ${countRegular}`, `New Regular description ${countRegular}`, false, 0, new Date())}>
             Créer une tache simple 📝
         </button>
 
-        <button className='timedTaskBtn' onClick={() => createTimedTask(`${countTotal}`, `New Timed task ${countTimed}`, `New Timed description ${countTimed}`, false, 0, new Date(), 30)}>
+        <button onClick={() => createTimedTask(`${countTotal}`, `New Timed task ${countTimed}`, `New Timed description ${countTimed}`, false, 0, new Date(), 30)}>
             Créer une tache minutée ⏱️
         </button>
       </div>
 
       <div className='footer'>
-        <a href="https://github.com/Enzoait/CollabTaskManager"><img src={githubIcon} alt="githubIcon"/></a>
+        <a href="https://github.com/Enzoait/CollabTaskManager" target='_blank'><img src={githubIcon} alt="githubIcon"/></a>
         <p>Crée par <a href='https://github.com/Enzoait' target='_blank'>Enzoait</a>.</p>
       </div>
     </>
